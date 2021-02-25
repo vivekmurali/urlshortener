@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,14 +19,18 @@ func getURLS(w http.ResponseWriter, r *http.Request) {
 	}
 	err = db.View(func(tx *bolt.Tx) error {
 		v := tx.Bucket([]byte("urlshortener")).Get([]byte(URL))
-		fmt.Printf("v = %+v\n%#v", v, v)
 		w.Write(v)
+
 		return nil
 	})
 	if err != nil {
 		w.Write([]byte(err.Error()))
 	}
-	db.Close()
+
+	err = db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
@@ -64,7 +67,6 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 		}
 		url = r.FormValue("url")
 		shortURL = r.FormValue("short")
-		fmt.Println(url, shortURL)
 		// fmt.Println(r.Form)
 
 	}
@@ -76,6 +78,7 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists([]byte("urlshortener"))
 		if err != nil {
+
 			return err
 		}
 		v := b.Get([]byte(url))
@@ -90,6 +93,7 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		w.Write([]byte(err.Error()))
+		db.Close()
 		return
 	}
 	err = db.Close()
