@@ -10,26 +10,55 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+type ErrorJson struct {
+	Error string `json:"error"`
+}
+
+type URLJson struct {
+	Url string `json:"url"`
+}
+
+type ResJson struct {
+	Response string `json:"response"`
+}
+
 func getURLS(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte("Yay!!!"))
 	URL := r.URL.Query()["url"][0]
 	db, err := bolt.Open("mydb", 0666, nil)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		e := ErrorJson{
+			Error: err.Error(),
+		}
+		b, _ := json.Marshal(e)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(b)
+		return
 	}
 	err = db.View(func(tx *bolt.Tx) error {
 		v := tx.Bucket([]byte("urlshortener")).Get([]byte(URL))
-		w.Write(v)
+		e := URLJson{
+			Url: string(v),
+		}
+		b, _ := json.Marshal(e)
+		w.Write(b)
 
 		return nil
 	})
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		e := ErrorJson{
+			Error: err.Error(),
+		}
+		b, _ := json.Marshal(e)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(b)
+		return
 	}
 
 	err = db.Close()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 }
@@ -49,11 +78,24 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 		var data Body
 		gg, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			e := ErrorJson{
+				Error: err.Error(),
+			}
+			b, _ := json.Marshal(e)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(b)
+			return
 		}
+
 		err = json.Unmarshal([]byte(gg), &data)
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			e := ErrorJson{
+				Error: err.Error(),
+			}
+			b, _ := json.Marshal(e)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(b)
+			return
 		}
 
 		url = data.Url
@@ -63,7 +105,13 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 
 		err := r.ParseForm()
 		if err != nil {
-			w.Write([]byte(err.Error()))
+			e := ErrorJson{
+				Error: err.Error(),
+			}
+			b, _ := json.Marshal(e)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(b)
+			return
 		}
 		url = r.FormValue("url")
 		shortURL = r.FormValue("short")
@@ -72,7 +120,13 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 	}
 	db, err := bolt.Open("mydb", 0666, nil)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		e := ErrorJson{
+			Error: err.Error(),
+		}
+		b, _ := json.Marshal(e)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(b)
+		return
 	}
 
 	err = db.Update(func(tx *bolt.Tx) error {
@@ -92,7 +146,12 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 		return nil
 	})
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		e := ErrorJson{
+			Error: err.Error(),
+		}
+		b, _ := json.Marshal(e)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(b)
 		db.Close()
 		return
 	}
@@ -101,6 +160,10 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 		// w.Write([]byte(err.Error()))
 		log.Fatal(err.Error())
 	}
-	w.Write([]byte("Added to DATABASE"))
+	e := ResJson{
+		Response: "Added to database",
+	}
+	b, _ := json.Marshal(e)
+	w.Write(b)
 
 }
