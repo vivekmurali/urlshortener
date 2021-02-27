@@ -2,7 +2,7 @@
 	<div>
 		<!--img alt="Vue logo" src="./assets/logo.png" /-->
 		<!--HelloWorld msg="Hello Vue 3 + Vite" /-->
-		<UrlForm msg="Hello Vue 3 + Vite" />
+		<UrlForm  />
 	</div>
 </template>
 <script setup>

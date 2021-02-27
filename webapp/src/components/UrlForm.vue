@@ -11,6 +11,7 @@
 					>Enter a URL to make TINY</label
 				>
 				<input
+					v-model="url"
 					name="url"
 					type="url"
 					autocomplete="off"
@@ -24,6 +25,7 @@
 						>urltiny.in/</label
 					>
 					<input
+						v-model="short"
 						name="short"
 						autocomplete="off"
 						type="text"
@@ -32,6 +34,7 @@
 					/>
 				</div>
 				<button
+					@click="newUrl()"
 					class="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold text-lg"
 				>
 					Generate
@@ -41,4 +44,40 @@
 	</div>
 </template>
 
-<script></script>
+<script>
+export default {
+	name: "UrlForm",
+
+	data() {
+		return {
+			url: "",
+			short: "",
+		};
+	},
+	methods: {
+		newUrl: function () {
+			fetch("http://localhost:3000/newurl", {
+				method: "POST",
+				headers: {
+					Accept:
+						"application/json, text,plain, */*",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					url: this.url,
+					short: this.short,
+				}),
+			})
+				.then((res) => {
+					return res.json();
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.error(err.messsage);
+				});
+		},
+	},
+};
+</script>

@@ -24,7 +24,7 @@ type ResJson struct {
 
 func getURLS(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte("Yay!!!"))
-	URL := r.URL.Query()["url"][0]
+	shortURL := r.URL.Query()["short"][0]
 	db, err := bolt.Open("mydb", 0666, nil)
 	if err != nil {
 		e := ErrorJson{
@@ -36,7 +36,7 @@ func getURLS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = db.View(func(tx *bolt.Tx) error {
-		v := tx.Bucket([]byte("urlshortener")).Get([]byte(URL))
+		v := tx.Bucket([]byte("urlshortener")).Get([]byte(shortURL))
 		e := URLJson{
 			Url: string(v),
 		}
@@ -139,7 +139,7 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 		if v != nil {
 			return errors.New("URL already exists")
 		}
-		err = b.Put([]byte(url), []byte(shortURL))
+		err = b.Put([]byte(shortURL), []byte(url))
 		if err != nil {
 			return err
 		}
