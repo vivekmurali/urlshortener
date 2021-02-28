@@ -7,7 +7,7 @@ export default {
 	created() {
 		/* window.location.href = "https://duckduckgo.com" */
 		fetch(
-			`http://localhost:3000/urls?short=${this.$route.params.short}`
+			`https://api.urltiny.in/urls?short=${this.$route.params.short}`
 		)
 			.then((res) => {
 				return res.json();

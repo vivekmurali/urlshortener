@@ -56,7 +56,7 @@ export default {
 	},
 	methods: {
 		newUrl: function () {
-			fetch("http://localhost:3000/newurl", {
+			fetch("https://api.urltiny.in/newurl", {
 				method: "POST",
 				headers: {
 					Accept:
