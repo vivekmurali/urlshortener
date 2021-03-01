@@ -59,7 +59,7 @@
 						@click="newUrl()"
 						class="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold text-lg"
 					>
-						Generate
+						Shorten
 					</button>
 				</form>
 			</div>
