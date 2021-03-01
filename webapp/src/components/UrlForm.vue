@@ -70,12 +70,36 @@
 					<p class="font-semibold text-xl">
 						Your generated URL is
 					</p>
-					<input
-						type="text"
-						:disabled="true"
-						v-model="genurl"
-						class="mb-3 py-3 px-4 border border-gray-400 focus:outline-none rounded-md focus:ring-1 ring-cyan-500"
-					/>
+					<div
+						class="flex items-center space-x-2 w-full"
+					>
+						<input
+							type="text"
+							:disabled="true"
+							ref="text"
+							v-model="genurl"
+							class="py-3 px-4 border border-gray-400 rounded-md w-full font-semibold text-md"
+						/>
+						<button
+							class="py-3 px-3 border border-gray-400 rounded-md"
+							@click="copy"
+						>
+							<svg
+								class="h-6 w-6"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="{2}"
+									d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 			</div>
 		</transition>
@@ -122,6 +146,25 @@ export default {
 				.catch((err) => {
 					console.error(err.messsage);
 				});
+		},
+		copy: function () {
+			console.log("test");
+			this.selectText(this.$refs.text);
+			document.execCommand("copy");
+		},
+		selectText(element) {
+			var range;
+			if (document.selection) {
+				// IE
+				range = document.body.createTextRange();
+				range.moveToElementText(element);
+				range.select();
+			} else if (window.getSelection) {
+				range = document.createRange();
+				range.selectNode(element);
+				window.getSelection().removeAllRanges();
+				window.getSelection().addRange(range);
+			}
 		},
 	},
 };
