@@ -1,7 +1,15 @@
 <template>
 	<div class="flex flex-col items-center">
 		<h1 class="text-gray-800 text-5xl font-bold">URL TINY</h1>
-		<!--button @click="show = !show">Transition</button-->
+		<button
+			@click="
+				this.$toast.success(`Hey! I'm here`, {
+					position: 'top',
+				})
+			"
+		>
+			Click for Notification
+		</button>
 		<transition
 			enter-active-class="animate__animated animate__fadeIn"
 			leave-active-class="animate__animated animate__fadeOut"
@@ -22,6 +30,7 @@
 						>Enter a URL to make TINY</label
 					>
 					<input
+						ref="firstinput"
 						v-model="url"
 						name="url"
 						type="url"
@@ -109,7 +118,6 @@
 <script>
 export default {
 	name: "UrlForm",
-
 	data() {
 		return {
 			genurl: "",
@@ -137,11 +145,19 @@ export default {
 					if (res.status == 200) {
 						this.genurl = `urltiny.in/${this.short}`;
 						this.show = false;
+					} else {
+						this.url = "";
+						this.short = "";
+						this.$refs.firstinput.focus();
+						this.$toast.error(
+							`SHORT URL already in use`,
+							{ position: "top" }
+						);
 					}
 					return res.json();
 				})
 				.then((res) => {
-					console.log(res);
+					/* console.log(res); */
 				})
 				.catch((err) => {
 					console.error(err.messsage);
