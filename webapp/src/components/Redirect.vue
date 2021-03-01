@@ -1,4 +1,3 @@
-
 <script>
 export default {
 	created() {
@@ -10,9 +9,14 @@ export default {
 				return res.json();
 			})
 			.then((res) => {
-				/* console.log(res); */
-
-				window.location.href = res.url;
+				console.log(res);
+				if (res.url == "") {
+					console.log("works now");
+					window.location.href =
+						"https://urltiny.in/";
+				} else {
+					window.location.href = res.url;
+				}
 			});
 	},
 };
