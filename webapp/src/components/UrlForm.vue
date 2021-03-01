@@ -130,6 +130,15 @@ export default {
 	},
 	methods: {
 		newUrl: function () {
+			let re = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+
+			if (!re.test(this.url) || this.short.trim() == "") {
+				this.$toast.error(
+					`Enter a valid URL and a custom short URL`,
+					{ position: "top" }
+				);
+				return;
+			}
 			fetch("https://api.urltiny.in/newurl", {
 				method: "POST",
 				headers: {
