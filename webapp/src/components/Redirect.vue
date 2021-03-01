@@ -1,6 +1,3 @@
-<template>
-	{{ $route.params.short }}
-</template>
 
 <script>
 export default {
