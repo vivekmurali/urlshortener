@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col items-center">
 		<h1 class="text-gray-800 text-5xl font-bold">URL TINY</h1>
-		<button
+		<!--button
 			@click="
 				this.$toast.success(`Hey! I'm here`, {
 					position: 'top',
@@ -9,7 +9,7 @@
 			"
 		>
 			Click for Notification
-		</button>
+		</button-->
 		<transition
 			enter-active-class="animate__animated animate__fadeIn"
 			leave-active-class="animate__animated animate__fadeOut"
@@ -67,6 +67,7 @@
 		<transition
 			enter-active-class="animate__animated animate__fadeIn"
 			leave-active-class="animate__animated animate__fadeOut"
+			v-on:after-enter="showCopyTip"
 			appear
 		>
 			<div
@@ -162,6 +163,12 @@ export default {
 				.catch((err) => {
 					console.error(err.messsage);
 				});
+		},
+		showCopyTip() {
+			this.$toast.show(
+				`You can click on the copy button to copy the URL`,
+				{ position: "top" }
+			);
 		},
 		copy: function () {
 			console.log("test");
