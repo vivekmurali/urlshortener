@@ -135,7 +135,7 @@ func newURL(w http.ResponseWriter, r *http.Request) {
 
 			return err
 		}
-		v := b.Get([]byte(url))
+		v := b.Get([]byte(shortURL))
 		if v != nil {
 			return errors.New("URL already exists")
 		}
